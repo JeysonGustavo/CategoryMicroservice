@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Category.API.Core.EventBus;
 using Category.API.Core.Manager;
 using Category.API.Core.Models.Domain;
 using Category.API.Core.Models.Request;
@@ -13,11 +14,13 @@ namespace Category.API.Application.Controllers
     {
         private readonly ICategoryManager _categoryManager;
         private readonly IMapper _mapper;
+        private readonly IEventBusMessage _eventBusMessage;
 
-        public CategoryController(ICategoryManager categoryManager, IMapper mapper)
+        public CategoryController(ICategoryManager categoryManager, IMapper mapper, IEventBusMessage eventBusMessage)
         {
             _categoryManager = categoryManager;
             _mapper = mapper;
+            _eventBusMessage = eventBusMessage;
         }
 
         [HttpGet]
@@ -48,6 +51,8 @@ namespace Category.API.Application.Controllers
             _categoryManager.SaveChanges();
 
             var response = _mapper.Map<CategoryResponseModel>(category);
+
+            // _eventBusMessage.PublishNewCategory(requestModel);
 
             return CreatedAtRoute(nameof(GetCategoryById), new { Id = response.Id }, response);
         }

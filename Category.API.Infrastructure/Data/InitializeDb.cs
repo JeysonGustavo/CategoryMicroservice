@@ -1,5 +1,5 @@
-﻿using Category.API.Core.Models.Domain;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Category.API.Infrastructure.Data
@@ -15,16 +15,17 @@ namespace Category.API.Infrastructure.Data
 
         private static void SeedData(AppDbContext context)
         {
-            if (!context.Categories.Any())
-            {
-                context.Categories.AddRange(
-                    new CategoryModel() { Id = 1, CategoryName = "Microsoft" },
-                    new CategoryModel() { Id = 2, CategoryName = "Docker" },
-                    new CategoryModel() { Id = 3, CategoryName = "Linux" }
-                    );
+            context.Database.Migrate();
+            //if (!context.Categories.Any())
+            //{
+            //    context.Categories.AddRange(
+            //        new CategoryModel() { Id = 1, CategoryName = "Microsoft" },
+            //        new CategoryModel() { Id = 2, CategoryName = "Docker" },
+            //        new CategoryModel() { Id = 3, CategoryName = "Linux" }
+            //        );
 
-                context.SaveChanges();
-            }
+            //    context.SaveChanges();
+            //}
         }
     }
 }
