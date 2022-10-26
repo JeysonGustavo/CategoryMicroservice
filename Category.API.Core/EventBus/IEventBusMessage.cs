@@ -1,9 +1,9 @@
-﻿using Category.API.Core.Models.Request;
+﻿using Category.API.Core.Models.Response;
 
 namespace Category.API.Core.EventBus
 {
     public interface IEventBusMessage
     {
-        void PublishNewCategory(CategoryRequestModel requestModel);
+        void PublishNewCategory(CategoryResponseModel category);
     }
 }

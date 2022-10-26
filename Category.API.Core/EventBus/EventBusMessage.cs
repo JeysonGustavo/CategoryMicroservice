@@ -1,15 +1,15 @@
-﻿using Category.API.Core.Models.Request;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using System.Text.Json;
 using System.Text;
+using Category.API.Core.Models.Response;
 
 namespace Category.API.Core.EventBus
 {
     public class EventBusMessage : IEventBusMessage
     {
         private readonly ConnectionFactory _factory;
-        private IConnection _connection;
-        private IModel _channel;
+        private IConnection? _connection;
+        private IModel? _channel;
 
         public EventBusMessage()
         {
@@ -22,14 +22,19 @@ namespace Category.API.Core.EventBus
             CreateEventBusConnection();
         }
 
-        public void PublishNewCategory(CategoryRequestModel requestModel)
+        public void PublishNewCategory(CategoryResponseModel category)
         {
-            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(requestModel));
+            var message = JsonSerializer.Serialize(category);
 
-            if (_connection.IsOpen)
-            {
-                _channel.BasicPublish("direct", "new-category", null, body);
-            }
+            if (_connection != null && _connection.IsOpen)
+                SendMessage(message);
+        }
+
+        private void SendMessage(string message)
+        {
+            var body = Encoding.UTF8.GetBytes(message);
+
+            _channel.BasicPublish("direct", "new-category", null, body);
         }
 
         private void CreateEventBusConnection()
