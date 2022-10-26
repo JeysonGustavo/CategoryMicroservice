@@ -1,6 +1,7 @@
 ﻿using Category.API.Core.Infrastructure;
 using Category.API.Core.Models.Domain;
 using Category.API.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Category.API.Infrastructure.DAL
 {
@@ -13,18 +14,31 @@ namespace Category.API.Infrastructure.DAL
             _context = context;
         }
 
-        public void CreateCategory(CategoryModel category)
+        public async Task CreateCategory(CategoryModel category)
         {
-            if (category is null)
-                throw new ArgumentNullException(nameof(category));
+            using var transaction = _context.Database.BeginTransaction();
 
-            _context.Categories.Add(category);
+            try
+            {
+                if (category is null)
+                    throw new ArgumentNullException(nameof(category));
+
+                await _context.Categories.AddAsync(category);
+                await _context.SaveChangesAsync();
+
+                transaction.Commit();
+            }
+            catch (Exception)
+            {
+                transaction.Rollback();
+            }
         }
 
-        public IEnumerable<CategoryModel> GetAllCategories() => _context.Categories.ToList();
+        public async Task<IEnumerable<CategoryModel>> GetAllCategories() => await _context.Categories.ToListAsync();
 
-        public CategoryModel? GetCategoryById(int id) => _context.Categories.FirstOrDefault(c => c.Id.Equals(id));
+        public async Task<CategoryModel?> GetCategoryById(int id) => await _context.Categories.FirstOrDefaultAsync(c => c.Id.Equals(id));
 
-        public bool SaveChanges() => _context.SaveChanges() > 0;
+        public async Task<bool> SaveChanges() => await _context.SaveChangesAsync() > 0;
+
     }
 }

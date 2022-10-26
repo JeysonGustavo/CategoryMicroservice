@@ -4,12 +4,12 @@ namespace Category.API.Core.Manager
 {
     public interface ICategoryManager
     {
-        bool SaveChanges();
+        Task<bool> SaveChanges();
 
-        IEnumerable<CategoryModel> GetAllCategories();
+        Task<IEnumerable<CategoryModel>> GetAllCategories();
 
-        CategoryModel? GetCategoryById(int id);
+        Task<CategoryModel?> GetCategoryById(int id);
 
-        void CreateCategory(CategoryModel category);
+        Task CreateCategory(CategoryModel category);
     }
 }

@@ -12,12 +12,12 @@ namespace Category.API.Core.Manager
             _categoryDAL = categoryDAL;
         }
 
-        public bool SaveChanges() => _categoryDAL.SaveChanges();
+        public async Task<bool> SaveChanges() => await _categoryDAL.SaveChanges();
 
-        public void CreateCategory(CategoryModel category) => _categoryDAL.CreateCategory(category);
+        public async Task CreateCategory(CategoryModel category) => await _categoryDAL.CreateCategory(category);
 
-        public IEnumerable<CategoryModel> GetAllCategories() => _categoryDAL.GetAllCategories();
+        public async Task<IEnumerable<CategoryModel>> GetAllCategories() => await _categoryDAL.GetAllCategories();
 
-        public CategoryModel? GetCategoryById(int id) => _categoryDAL.GetCategoryById(id);
+        public async Task<CategoryModel?> GetCategoryById(int id) => await _categoryDAL.GetCategoryById(id);
     }
 }

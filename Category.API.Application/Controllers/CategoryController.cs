@@ -24,17 +24,17 @@ namespace Category.API.Application.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CategoryResponseModel>> GetCategories()
+        public async Task<ActionResult> GetCategories()
         {
-            var categories = _categoryManager.GetAllCategories();
+            var categories = await _categoryManager.GetAllCategories();
 
             return Ok(_mapper.Map<IEnumerable<CategoryResponseModel>>(categories));
         }
 
         [HttpGet("{id}", Name = "GetCategoryById")]
-        public ActionResult<CategoryResponseModel> GetCategoryById(int id)
+        public async Task<ActionResult> GetCategoryById(int id)
         {
-            var category = _categoryManager.GetCategoryById(id);
+            var category = await _categoryManager.GetCategoryById(id);
 
             if (category is null)
                 return NotFound();
@@ -43,16 +43,15 @@ namespace Category.API.Application.Controllers
         }
 
         [HttpPost]
-        public ActionResult<CategoryResponseModel> CreateCategory(CategoryRequestModel requestModel)
+        public async Task<ActionResult<CategoryResponseModel>> CreateCategory(CategoryRequestModel requestModel)
         {
             var category = _mapper.Map<CategoryModel>(requestModel);
 
-            _categoryManager.CreateCategory(category);
-            _categoryManager.SaveChanges();
+            await _categoryManager.CreateCategory(category);
 
             var response = _mapper.Map<CategoryResponseModel>(category);
 
-            _eventBusMessage.PublishNewCategory(response);
+            // _eventBusMessage.PublishNewCategory(response);
 
             return CreatedAtRoute(nameof(GetCategoryById), new { Id = response.Id }, response);
         }
