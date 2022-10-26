@@ -51,7 +51,7 @@ namespace Category.API.Application.Controllers
 
             var response = _mapper.Map<CategoryResponseModel>(category);
 
-            // _eventBusMessage.PublishNewCategory(response);
+            _eventBusMessage.PublishNewCategory(response);
 
             return CreatedAtRoute(nameof(GetCategoryById), new { Id = response.Id }, response);
         }
